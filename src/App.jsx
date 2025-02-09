@@ -144,7 +144,7 @@ function App() {
   };
 
   // Function to handle field changes
-  const handleChnage = (e) => {
+  const handleChange = (e) => {
     const newData = { ...data, [e.target.name]: e.target.value };
     validateStepData(newData);
     setData((prev) => newData);
@@ -158,7 +158,7 @@ function App() {
 
     if (isValid) {
       console.log(data);
-      alert(`Form Submited successfully ${data.name}`);
+      alert(`Form Submitted successfully ${data.name}`);
     }
   };
 
@@ -189,7 +189,7 @@ function App() {
               value={data[field.name]}
               error={errors[field.name]}
               options={field?.options}
-              chnageFunc={handleChnage}
+              changeFunc={handleChange}
             />
           ))}
           <div className="buttons">

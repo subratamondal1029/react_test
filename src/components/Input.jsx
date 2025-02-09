@@ -5,7 +5,7 @@ const Input = ({
   name,
   type = "text",
   value,
-  chnageFunc,
+  changeFunc,
   error = "",
   options = [],
 }) => {
@@ -23,7 +23,7 @@ const Input = ({
               name={name}
               id={`${id}-${i}`}
               checked={value === option}
-              onChange={chnageFunc}
+              onChange={changeFunc}
             />{" "}
             <label htmlFor={`${id}-${i}`}>{option}</label>
           </div>
@@ -33,7 +33,7 @@ const Input = ({
           type={type}
           name={name}
           value={value}
-          onChange={chnageFunc}
+          onChange={changeFunc}
           id={id}
           key={id}
         />
