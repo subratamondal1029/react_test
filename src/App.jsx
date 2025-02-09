@@ -124,7 +124,17 @@ function App() {
       setStep(selectedStep);
     } else {
       // If going forward, validate the current step
-      const isValid = validateStepData(data);
+      let allFields;
+
+      if (selectedStep > step + 1) {
+        allFields = steps
+          .flatMap((step, index) =>
+            index !== selectedStep - 1 ? step.fields : []
+          )
+          .filter(Boolean);
+      }
+
+      const isValid = validateStepData(data, allFields);
 
       if (isValid) {
         // If no errors, change the step
