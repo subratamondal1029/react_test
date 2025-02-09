@@ -11,10 +11,13 @@ function App() {
     experience: "",
   };
 
+  // Steps array contains objects with label and fields
   const steps = [
     {
       label: "Profile",
       fields: [
+        // Each field is an object with label, name, type, and
+        // optional options for radio buttons
         { label: "Name", name: "name", type: "text" },
         { label: "Email", name: "email", type: "email" },
         {
@@ -37,8 +40,11 @@ function App() {
     },
   ];
 
+  // Validation rules object with nested arrays of rules
   const validationRules = {
     name: [
+      // Each rule is an object with required, pattern, or custom
+      // properties and message property
       { required: true, message: "Name is required." },
       { min: 3, message: "Name must be at least 3 characters." },
     ],
@@ -67,7 +73,7 @@ function App() {
     currentFields.forEach(({ name }) => {
       if (rules[name]) {
         const fieldRules = rules[name];
-        const value = formData[name]?.trim?.() || formData[name];
+        const value = formData[name]?.trim() || formData[name];
 
         for (const rule of fieldRules) {
           if (rule.required && !value) {
@@ -97,10 +103,13 @@ function App() {
   const [data, setData] = useState(defaultFormData);
   const [errors, setErrors] = useState({});
 
+  // Function to handle step changes
   const handleChangeStep = (selectedStep) => {
     if (selectedStep < step) {
+      // If going back, just change the step
       setStep(selectedStep);
     } else {
+      // If going forward, validate the current step
       const stepErrors = validateStepData(
         data,
         validationRules,
@@ -110,15 +119,18 @@ function App() {
       setErrors(stepErrors);
 
       if (Object.keys(stepErrors).length === 0) {
+        // If no errors, change the step
         setStep(selectedStep);
       }
     }
   };
 
+  // Function to handle field changes
   const handleChnage = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const allFields = steps.flatMap((step) => step.fields);
@@ -143,6 +155,7 @@ function App() {
       <div className="formContainer">
         <div className="steps">
           {steps.map((stepName, i) => (
+            // Step component displays the label and handles step changes
             <Step
               name={stepName.label}
               step={i + 1}
@@ -154,6 +167,8 @@ function App() {
         </div>
         <form onSubmit={handleSubmit}>
           {steps[step - 1].fields.map((field, i) => (
+            // Input component displays the label, value, and error message
+            // and handles changes to the field
             <Input
               key={i}
               label={field.label}
@@ -167,6 +182,7 @@ function App() {
           ))}
           <div className="buttons">
             {step > 1 && (
+              // Button component displays the label and handles clicks
               <Button
                 label="Back"
                 clickFunc={() => handleChangeStep(step - 1)}
@@ -180,7 +196,10 @@ function App() {
                 type="button"
               />
             )}
-            {step === steps.length && <Button label="Submit" type="submit" />}
+            {step === steps.length && (
+              // Submit button is only visible when on the last step
+              <Button label="Submit" type="submit" />
+            )}
           </div>
         </form>
       </div>
