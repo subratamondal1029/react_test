@@ -67,7 +67,11 @@ function App() {
   };
 
   // Generic validation function
-  const validateStepData = (formData, rules, currentFields) => {
+  const validateStepData = (
+    formData,
+    currentFields = steps[step - 1].fields,
+    rules = validationRules
+  ) => {
     const errors = {};
 
     currentFields.forEach(({ name }) => {
@@ -96,7 +100,17 @@ function App() {
       }
     });
 
-    return errors;
+    const firstErrorKey = Object.keys(errors)[0];
+    if (firstErrorKey) {
+      const firstErrorStepIndex = steps.findIndex((step) =>
+        step.fields.some((field) => field.name === firstErrorKey)
+      );
+
+      setStep(firstErrorStepIndex + 1);
+    }
+    setErrors(errors);
+
+    return firstErrorKey ? false : true;
   };
 
   const [step, setStep] = useState(1);
@@ -110,15 +124,9 @@ function App() {
       setStep(selectedStep);
     } else {
       // If going forward, validate the current step
-      const stepErrors = validateStepData(
-        data,
-        validationRules,
-        steps[step - 1].fields
-      );
+      const isValid = validateStepData(data);
 
-      setErrors(stepErrors);
-
-      if (Object.keys(stepErrors).length === 0) {
+      if (isValid) {
         // If no errors, change the step
         setStep(selectedStep);
       }
@@ -127,26 +135,20 @@ function App() {
 
   // Function to handle field changes
   const handleChnage = (e) => {
-    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const newData = { ...data, [e.target.name]: e.target.value };
+    validateStepData(newData);
+    setData((prev) => newData);
   };
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     const allFields = steps.flatMap((step) => step.fields);
-    const errors = validateStepData(data, validationRules, allFields);
-    setErrors(errors);
-    if (Object.keys(errors).length === 0) {
+    const isValid = validateStepData(data, allFields);
+
+    if (isValid) {
       console.log(data);
       alert(`Form Submited successfully ${data.name}`);
-    } else {
-      console.log(errors);
-      const firstErrorKey = Object.keys(errors)[0];
-      const firstErrorStepIndex = steps.findIndex((step) =>
-        step.fields.some((field) => field.name === firstErrorKey)
-      );
-
-      setStep(firstErrorStepIndex + 1);
     }
   };
 
